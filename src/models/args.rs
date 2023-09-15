@@ -7,6 +7,6 @@ use clap::Parser;
 #[command(author, version, about, long_about = None)]
 pub struct CommandLineInterfaceArguments {
     /// Sets a custom config file
-    #[arg(short, long, value_name = "FILE")]
+    #[arg(short, long, value_name = "PATH")]
     pub config: Option<PathBuf>,
 }
