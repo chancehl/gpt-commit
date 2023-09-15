@@ -1,13 +1,27 @@
-import { program } from 'commander'
+import { Command } from 'commander'
 
-import { Arguments, Options } from './arguments'
+import { init } from './commands/init'
+import { GLOBAL_CONFIG_PATH } from './constants/config'
+import { execute } from './commands/execute'
 
-program.option('-c, --config <file>', 'The location of your gpt-commit config.json file').parse()
+const program = new Command()
 
-const args = new Arguments(program.opts<Options>())
+// enable positional options
+program.enablePositionalOptions()
 
-const valid = await args.validate()
+// this is the default command (gpt-commit)
+// prettier-ignore
+program
+    .action(execute)
+    .description('Asks ChatGPT to write a commit message for you based on your current git diff')
 
-if (!valid) {
-    program.help()
-}
+// init command (gpt-commit init)
+// prettier-ignore
+program
+    .command('init')
+    .description(`Creates the ${GLOBAL_CONFIG_PATH} file`)
+    .option('-f, --force', 'This option overwrites the existing file')
+    .action(init)
+
+// parse command line args
+program.parse(process.argv)
