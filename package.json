@@ -1,18 +1,20 @@
 {
-  "name": "gpt-commit",
-  "module": "index.ts",
-  "type": "module",
-  "scripts": {
-    "package": "bun build ./src/index.ts --compile --outfile gpt-commit"
-  },
-  "devDependencies": {
-    "@types/commander": "^2.12.2",
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "commander": "^11.0.0"
-  }
+    "name": "gpt-commit",
+    "module": "index.ts",
+    "type": "module",
+    "scripts": {
+        "format": "bunx prettier --write **/*",
+        "package": "bun build ./src/index.ts --compile --outfile gpt-commit"
+    },
+    "devDependencies": {
+        "@types/commander": "^2.12.2",
+        "bun-types": "latest",
+        "prettier": "^3.0.3"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "commander": "^11.0.0"
+    }
 }

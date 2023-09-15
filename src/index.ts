@@ -1,9 +1,13 @@
-import { program } from "commander";
+import { program } from 'commander'
 
-program.option("-c, --config <file>").parse();
+import { Arguments, Options } from './arguments'
 
-const options = program.opts();
+program.option('-c, --config <file>', 'The location of your gpt-commit config.json file').parse()
 
-const file = options.config;
+const args = new Arguments(program.opts<Options>())
 
-console.log({ file });
+const valid = await args.validate()
+
+if (!valid) {
+    program.help()
+}
