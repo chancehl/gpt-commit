@@ -13,6 +13,7 @@ program.enablePositionalOptions()
 // prettier-ignore
 program
     .action(execute)
+    .option('-g, --gitmoji', 'Uses the gitmoji commit spec')
     .description('Asks ChatGPT to write a commit message for you based on your current git diff')
 
 // init command (gpt-commit init)

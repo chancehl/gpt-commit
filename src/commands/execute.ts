@@ -1,4 +1,4 @@
-// import { openai } from '../openai'
+import { openai, OPENAI_PROMPT } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
 
 type ExecutionOptions = {
@@ -6,7 +6,7 @@ type ExecutionOptions = {
 }
 
 export async function execute(options: Partial<ExecutionOptions>) {
-    options = { ...options, gitmoji: options?.gitmoji ?? false }
+    options = { ...options, gitmoji: options?.gitmoji ?? true }
 
     const isRepo = await isGitRepository()
 
@@ -15,20 +15,16 @@ export async function execute(options: Partial<ExecutionOptions>) {
         process.exit(1)
     }
 
-    const statusProcess = Bun.spawn(['git', 'status', '--porcelain'])
+    const diffProcess = Bun.spawn(['git', 'diff'])
 
-    const files = (await new Response(statusProcess.stdout).text()).split('\n')
+    const diff = await new Response(diffProcess.stdout).text()
 
-    for (const file of files) {
-        const [_, name] = file.split(' ')
+    const completion = await openai.chat.completions.create({
+        messages: [{ role: 'assistant', content: OPENAI_PROMPT.replace('{DIFF}', diff) }],
+        model: 'gpt-3.5-turbo',
+    })
 
-        console.log({ file, name })
-    }
+    const commitMessages = completion.choices[0].message.content?.split('\n')
 
-    // const completion = await openai.chat.completions.create({
-    //     messages: [{ role: 'user', content: `Write a succinct commit message for this git diff: ${diff}` }],
-    //     model: 'gpt-3.5-turbo',
-    // })
-
-    console.log({ options, isRepo })
+    console.log({ options, isRepo, diff, completion, commitMessages })
 }
