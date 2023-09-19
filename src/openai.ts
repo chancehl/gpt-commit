@@ -4,6 +4,10 @@ export const OPENAI_PROMPT = `Pretend you are an API endpoint whose purpose is w
 
 export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
+export const PROMPT_TOKEN_COST = 0.0015
+
+export const COMPLETION_TOKEN_COST = 0.002
+
 /**
  * Generates the prompt to send to ChatGPT
  *
@@ -34,7 +38,7 @@ function parseCommitMessages(message: OpenAI.Chat.Completions.ChatCompletionMess
  * @param diff
  * @returns
  */
-export async function generateCommitMessages(diff: string): Promise<string[]> {
+export async function generateCommitMessages(diff: string): Promise<[string[], OpenAI.Completions.CompletionUsage | undefined]> {
     const completion = await openai.chat.completions.create({
         messages: [{ role: 'assistant', content: generatePrompt(diff) }],
         model: 'gpt-3.5-turbo',
@@ -44,7 +48,24 @@ export async function generateCommitMessages(diff: string): Promise<string[]> {
 
     // TODO: validate commit messages
 
-    return commits
+    return [commits, completion.usage]
+}
+
+/**
+ * Calculates the usage cost based on the token count
+ *
+ * @param usage
+ * @returns
+ */
+export function calculateUsageCost(usage: OpenAI.Completions.CompletionUsage | undefined): { tokens: number; cost: number } {
+    if (usage == null) {
+        return { tokens: 0, cost: 0 }
+    }
+
+    const promptCost = (usage.prompt_tokens / 1000) * PROMPT_TOKEN_COST
+    const completionCost = (usage.completion_tokens / 1000) * COMPLETION_TOKEN_COST
+
+    return { tokens: usage.total_tokens, cost: promptCost + completionCost }
 }
 
 export default openai

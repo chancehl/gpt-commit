@@ -2,9 +2,9 @@ import ora from 'ora'
 import clipboard from 'clipboardy'
 import colors from 'colors'
 
-import { generateCommitMessages } from '../openai'
+import { calculateUsageCost, generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
-import { getDiff, commitChanges, stageAllFiles } from './subcommands/git'
+import { getDiff, commitChanges } from './subcommands/git'
 
 type ExecutionOptions = {
     gitmoji?: boolean
@@ -31,11 +31,13 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     gptSpinner.start()
 
-    const messages = await generateCommitMessages(diff)
+    const [messages, usage] = await generateCommitMessages(diff)
+
+    const { cost } = calculateUsageCost(usage)
 
     gptSpinner.stop()
 
-    console.log('ChatGPT generated the following commit message(s):\n')
+    console.log(`ChatGPT generated the following commit message(s) (usage = ${usage?.total_tokens} tokens, cost = $${cost}):\n`)
 
     for (const message of messages) {
         console.log(`${message}`)
