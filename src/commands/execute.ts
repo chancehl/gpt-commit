@@ -57,7 +57,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
                 commitSpinner.stop()
 
                 if (exitCode === 0) {
-                    console.log('Success!')
+                    console.log('Successfully committed changes')
                 } else {
                     console.error('Failed to commit changes. Please run `git commit` manually to debug.')
                     process.exit(1)
