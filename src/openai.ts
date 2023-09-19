@@ -42,6 +42,8 @@ export async function generateCommitMessages(diff: string): Promise<string[]> {
 
     const commits = parseCommitMessages(completion.choices[0].message)
 
+    // TODO: validate commit messages
+
     return commits
 }
 

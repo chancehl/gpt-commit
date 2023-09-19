@@ -15,6 +15,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "commander": "^11.0.0",
     "openai": "^4.7.0",
     "ora": "^7.0.1"
