@@ -17,9 +17,14 @@ export async function execute(options: Partial<ExecutionOptions>) {
         process.exit(1)
     }
 
-    const diffProcess = Bun.spawn(['git', 'diff', '--staged'])
+    const diffProcess = Bun.spawn(['git', 'diff'])
 
     const diff = await new Response(diffProcess.stdout).text()
+
+    if (diff.length === 0) {
+        console.error('Could not determine `git diff`. Aborting.')
+        process.exit(1)
+    }
 
     const gptSpinner = ora('Asking ChatGPT to create a commit message for this diff').start()
 
@@ -47,11 +52,16 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.start()
 
-        Bun.spawn(['git', 'commit', '-m', commitMessages.join('\n')], {
+        Bun.spawn(['git', 'commit', '-a', '-m', commitMessages.join('\n')], {
             onExit(subprocess, exitCode, signalCode, error) {
                 commitSpinner.stop()
 
-                console.log('Success!', { exitCode, signalCode, error })
+                if (exitCode === 0) {
+                    console.log('Success!')
+                } else {
+                    console.error('Failed to commit changes. Please run `git commit` manually to debug.')
+                    process.exit(1)
+                }
             },
         })
     } else {
