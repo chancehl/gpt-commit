@@ -4,11 +4,8 @@ type GetDiffOptions = {
     stageFiles?: boolean
 }
 
-type CallbackArgs = {
-    subprocess: Subprocess
-    exitCode: number | null
-    signalCode: number | null
-    error?: Errorlike
+type CommitChangesOptions = {
+    push?: boolean
 }
 
 /**
@@ -35,7 +32,7 @@ export async function getDiff(options?: GetDiffOptions): Promise<string> {
  * @param messages
  * @param options
  */
-export async function commitChanges(messages: string[]): Promise<void> {
+export async function commitChanges(messages: string[], options?: CommitChangesOptions): Promise<void> {
     Bun.spawnSync(['git', 'commit', '-a', '-m', messages.join('\n')], {
         onExit(subprocess, exitCode, signalCode, error) {
             if (exitCode === 0) {
@@ -46,6 +43,12 @@ export async function commitChanges(messages: string[]): Promise<void> {
             }
         },
     })
+
+    if (options?.push) {
+        Bun.spawnSync(['git', 'push'], {
+            stdout: 'pipe',
+        })
+    }
 }
 
 export async function stageAllFiles(): Promise<void> {

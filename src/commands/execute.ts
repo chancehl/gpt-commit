@@ -6,12 +6,10 @@ import { isGitRepository } from '../utils/is-repo'
 import { getDiff, commitChanges } from './subcommands/git'
 
 type ExecutionOptions = {
-    gitmoji?: boolean
+    push?: boolean
 }
 
 export async function execute(options: Partial<ExecutionOptions>) {
-    options = { ...options, gitmoji: options?.gitmoji ?? true }
-
     const isRepo = await isGitRepository()
 
     if (!isRepo) {
@@ -50,7 +48,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.start()
 
-        await commitChanges(messages)
+        await commitChanges(messages, { push: options.push })
 
         commitSpinner.stop()
 
