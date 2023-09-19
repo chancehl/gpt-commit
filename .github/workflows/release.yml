@@ -1,8 +1,8 @@
-name: Release application
+name: Release
 on: [push]
 jobs:
-    my-job:
-        name: my-job
+    package:
+        name: package
         runs-on: ubuntu-latest
         steps:
             # ...
@@ -12,3 +12,10 @@ jobs:
             # run any `bun` or `bunx` command
             - run: bun install
             - run: bun run package
+
+            - uses: Shopify/upload-to-release@v1
+            with:
+                name: my-artifact
+                path: gpt-commit
+                repo-token: ${{ secrets.GITHUB_TOKEN }}
+                content-type: text/plain # Optional 
