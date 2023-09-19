@@ -1,5 +1,6 @@
 import ora from 'ora'
 import clipboard from 'clipboardy'
+import colors from 'colors'
 
 import { generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
@@ -42,7 +43,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     clipboard.writeSync(messages.join('\n'))
 
-    console.log('\nThis diff has been copied to your clipboard.')
+    console.log(`\n${colors.cyan('This diff has been copied to your clipboard.')}`)
 
     const reply = prompt('\nWould you like to run `git commit -a` with this commit message?')
 
@@ -55,7 +56,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.stop()
 
-        console.log('\nSuccess! Your changes have been comitted.')
+        console.log(`\n${colors.green('Success!')} Your changes have been comitted.`)
     } else {
         console.log('\nYour changes have not been committed.')
         process.exit(1)
