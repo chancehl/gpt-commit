@@ -30,7 +30,6 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     const [messages, usage] = await generateCommitMessages(diff)
 
-    // TODO: log cost
     const cost = calculateUsageCost(usage)
 
     gptSpinner.stop()
@@ -38,8 +37,10 @@ export async function execute(options: Partial<ExecutionOptions>) {
     console.log(`ChatGPT generated the following commit message(s):\n`)
 
     for (let i = 0; i < messages.length; i++) {
-        console.log(`${colors.green(`${i + 1}`)}. ${messages[i]}`)
+        console.log(`${messages[i]}`)
     }
+
+    console.log(colors.dim(`\nUsage: $${cost}`))
 
     const loggedCommand = options.push ? 'git commit -a && git push' : 'git commit -a'
     const promptMessage = `\nWould you like to run \`${loggedCommand}\` with this commit message?`
@@ -57,7 +58,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         console.log(`\n${colors.green('Success!')} Your changes have been comitted.`)
     } else {
-        console.log('\nYour changes have not been committed.')
+        console.log(`\n${colors.yellow('Your changes have not been committed.')}`)
         process.exit(1)
     }
 }
