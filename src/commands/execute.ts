@@ -2,6 +2,7 @@ import ora from 'ora'
 
 import { generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
+import { getDiff, commitChanges } from './subcommands/git'
 
 type ExecutionOptions = {
     gitmoji?: boolean
@@ -17,9 +18,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
         process.exit(1)
     }
 
-    const diffProcess = Bun.spawn(['git', 'diff'])
-
-    const diff = await new Response(diffProcess.stdout).text()
+    const diff = await getDiff()
 
     if (diff.length === 0) {
         console.error('Could not determine `git diff`. Aborting.')
@@ -49,16 +48,9 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.start()
 
-        Bun.spawn(['git', 'commit', '-a', '-m', messages.join('\n')], {
-            onExit(subprocess, exitCode, signalCode, error) {
+        await commitChanges(messages, {
+            callback: function stopCommitSpinner() {
                 commitSpinner.stop()
-
-                if (exitCode === 0) {
-                    console.log('Successfully committed changes')
-                } else {
-                    console.error('Failed to commit changes. Please run `git commit` manually to debug.', { error })
-                    process.exit(1)
-                }
             },
         })
     } else {
