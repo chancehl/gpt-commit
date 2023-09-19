@@ -25,4 +25,4 @@ program
     .action(init)
 
 // parse command line args
-program.parse(process.argv)
+program.parseAsync(process.argv)

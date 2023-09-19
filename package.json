@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "commander": "^11.0.0",
-    "openai": "^4.7.0"
+    "openai": "^4.7.0",
+    "ora": "^7.0.1"
   }
 }
