@@ -30,13 +30,14 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     gptSpinner.start()
 
-    const [messages, usage] = await generateCommitMessages(diff)
+    const [messages, _usage] = await generateCommitMessages(diff)
 
-    const { cost } = calculateUsageCost(usage)
+    // TODO: log cost
+    // const { cost } = calculateUsageCost(usage)
 
     gptSpinner.stop()
 
-    console.log(`ChatGPT generated the following commit message(s) (usage = ${usage?.total_tokens} tokens, cost = $${cost}):\n`)
+    console.log(`ChatGPT generated the following commit message(s):\n`)
 
     for (const message of messages) {
         console.log(`${message}`)
