@@ -2,7 +2,7 @@ import ora from 'ora'
 
 import { generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
-import { getDiff, commitChanges } from './subcommands/git'
+import { getDiff, commitChanges, stageAllFiles } from './subcommands/git'
 
 type ExecutionOptions = {
     gitmoji?: boolean
@@ -18,7 +18,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
         process.exit(1)
     }
 
-    const diff = await getDiff()
+    const diff = await getDiff({ stageFiles: true })
 
     if (diff.length === 0) {
         console.error('Could not determine `git diff`. Aborting.')
