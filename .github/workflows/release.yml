@@ -9,13 +9,3 @@ jobs:
 
             - run: bun install
             - run: bun run package
-
-            - uses: dev-build-deploy/release-me@v0
-              with:
-                  token: ${{ github.token }}
-                  prefix: v # OPTIONAL; prefixes the version with v (e.g. v1.0.0)
-                  versioning: semver # OPTIONAL; either `semver` or `calver`
-                  files: | # OPTIONAL; multiline list of local files names to upload as GitHub Release assets
-                      gpt-commit
-                  artifacts: | # OPTIONAL; multiline list of build artifacts to upload as GitHub Release assets
-                      gpt-commit
