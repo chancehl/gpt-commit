@@ -1,5 +1,24 @@
-export async function getDiff(options: any): Promise<string> {
-    if (options.stageFiles) {
+import { Errorlike, Subprocess } from 'bun'
+
+type GetDiffOptions = {
+    stageFiles?: boolean
+}
+
+type CallbackArgs = {
+    subprocess: Subprocess
+    exitCode: number | null
+    signalCode: number | null
+    error?: Errorlike
+}
+
+/**
+ * Gets the `git diff` and returns it as a string
+ *
+ * @param options
+ * @returns
+ */
+export async function getDiff(options?: GetDiffOptions): Promise<string> {
+    if (options?.stageFiles) {
         await stageAllFiles()
     }
 
@@ -10,13 +29,15 @@ export async function getDiff(options: any): Promise<string> {
     return diff
 }
 
-export async function commitChanges(messages: string[], options?: any): Promise<void> {
-    Bun.spawn(['git', 'commit', '-a', '-m', messages.join('\n')], {
+/**
+ * Commits the changes on behalf of the user
+ *
+ * @param messages
+ * @param options
+ */
+export async function commitChanges(messages: string[]): Promise<void> {
+    Bun.spawnSync(['git', 'commit', '-a', '-m', messages.join('\n')], {
         onExit(subprocess, exitCode, signalCode, error) {
-            if (options.callback) {
-                options.callback({ subprocess, exitCode, signalCode, error })
-            }
-
             if (exitCode === 0) {
                 console.log('Successfully committed changes')
             } else {

@@ -48,11 +48,9 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.start()
 
-        await commitChanges(messages, {
-            callback: function stopCommitSpinner() {
-                commitSpinner.stop()
-            },
-        })
+        await commitChanges(messages)
+
+        commitSpinner.stop()
     } else {
         console.log('Your changes have not been committed.')
         process.exit(1)
