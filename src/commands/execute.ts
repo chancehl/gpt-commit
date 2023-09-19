@@ -1,6 +1,6 @@
 import ora from 'ora'
 
-import { openai, OPENAI_PROMPT } from '../openai'
+import { generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
 
 type ExecutionOptions = {
@@ -26,20 +26,17 @@ export async function execute(options: Partial<ExecutionOptions>) {
         process.exit(1)
     }
 
-    const gptSpinner = ora('Asking ChatGPT to create a commit message for this diff').start()
+    const gptSpinner = ora('Asking ChatGPT to create a commit message for this diff')
 
-    const completion = await openai.chat.completions.create({
-        messages: [{ role: 'assistant', content: OPENAI_PROMPT.replace('{DIFF}', diff) }],
-        model: 'gpt-3.5-turbo',
-    })
+    gptSpinner.start()
 
-    const commitMessages = completion.choices[0].message.content?.split('\n').filter((str) => str.length > 0) ?? []
+    const messages = await generateCommitMessages(diff)
 
     gptSpinner.stop()
 
     console.log('Generated the following commit message(s):\n')
 
-    for (const message of commitMessages) {
+    for (const message of messages) {
         console.log(`${message}`)
     }
 
@@ -52,7 +49,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.start()
 
-        Bun.spawn(['git', 'commit', '-a', '-m', commitMessages.join('\n')], {
+        Bun.spawn(['git', 'commit', '-a', '-m', messages.join('\n')], {
             onExit(subprocess, exitCode, signalCode, error) {
                 commitSpinner.stop()
 
@@ -65,7 +62,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
             },
         })
     } else {
-        console.log('Aborting execution. Your changes have not been committed.')
+        console.log('Your changes have not been committed.')
         process.exit(1)
     }
 }

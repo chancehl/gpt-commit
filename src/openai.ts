@@ -4,4 +4,25 @@ export const OPENAI_PROMPT = `Pretend you are an API endpoint whose purpose is w
 
 export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
+function parseCommitMessages(message: OpenAI.Chat.Completions.ChatCompletionMessage): string[] {
+    if (message.content) {
+        const lines = message.content.split('\n')
+
+        return lines.filter((line) => line.length > 0)
+    }
+
+    return []
+}
+
+export async function generateCommitMessages(diff: string): Promise<string[]> {
+    const completion = await openai.chat.completions.create({
+        messages: [{ role: 'assistant', content: OPENAI_PROMPT.replace('{DIFF}', diff) }],
+        model: 'gpt-3.5-turbo',
+    })
+
+    const commits = parseCommitMessages(completion.choices[0].message)
+
+    return commits
+}
+
 export default openai
