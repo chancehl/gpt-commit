@@ -1,5 +1,4 @@
 import ora from 'ora'
-import clipboard from 'clipboardy'
 import colors from 'colors'
 
 import { calculateUsageCost, generateCommitMessages } from '../openai'
@@ -42,10 +41,6 @@ export async function execute(options: Partial<ExecutionOptions>) {
     for (const message of messages) {
         console.log(`${message}`)
     }
-
-    clipboard.writeSync(messages.join('\n'))
-
-    console.log(`\n${colors.cyan('This diff has been copied to your clipboard.')}`)
 
     const reply = prompt('\nWould you like to run `git commit -a` with this commit message?')
 
