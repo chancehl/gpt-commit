@@ -12,7 +12,7 @@ jobs:
 
             - uses: Shopify/upload-to-release@v1.0.1
               with:
-                  name: my-artifact
+                  name: gpt-commit
                   path: gpt-commit
                   repo-token: ${{ secrets.GITHUB_TOKEN }}
                   content-type: text/plain # Optional
