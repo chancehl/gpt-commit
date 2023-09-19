@@ -1,4 +1,5 @@
 import ora from 'ora'
+import clipboard from 'clipboardy'
 
 import { generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
@@ -38,6 +39,8 @@ export async function execute(options: Partial<ExecutionOptions>) {
     for (const message of messages) {
         console.log(`${message}`)
     }
+
+    clipboard.writeSync(messages.join('\n'))
 
     console.log('\nThis diff has been copied to your clipboard.')
 
