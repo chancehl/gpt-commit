@@ -35,7 +35,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     gptSpinner.stop()
 
-    console.log('Generated the following commit message(s):\n')
+    console.log('ChatGPT generated the following commit message(s):\n')
 
     for (const message of messages) {
         console.log(`${message}`)
