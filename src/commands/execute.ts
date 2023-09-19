@@ -59,7 +59,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
                 if (exitCode === 0) {
                     console.log('Successfully committed changes')
                 } else {
-                    console.error('Failed to commit changes. Please run `git commit` manually to debug.')
+                    console.error('Failed to commit changes. Please run `git commit` manually to debug.', { error })
                     process.exit(1)
                 }
             },
