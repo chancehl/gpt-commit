@@ -1,5 +1,7 @@
 name: Release
+
 on: [push]
+
 jobs:
     release:
         runs-on: ubuntu-latest
@@ -9,3 +11,6 @@ jobs:
 
             - run: bun install
             - run: bun run package
+            - uses: ncipollo/release-action@v1
+              with:
+                  artifacts: 'gpt-commit'
