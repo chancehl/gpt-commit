@@ -22,7 +22,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
     const diff = await getDiff({ stageFiles: true })
 
     if (diff.length === 0) {
-        console.error('Could not determine `git diff`. Aborting.')
+        console.error('Could not determine `git diff`.')
         process.exit(1)
     }
 
