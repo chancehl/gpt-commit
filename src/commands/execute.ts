@@ -28,10 +28,10 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     gptSpinner.start()
 
-    const [messages, _usage] = await generateCommitMessages(diff)
+    const [messages, usage] = await generateCommitMessages(diff)
 
     // TODO: log cost
-    // const { cost } = calculateUsageCost(usage)
+    const cost = calculateUsageCost(usage)
 
     gptSpinner.stop()
 

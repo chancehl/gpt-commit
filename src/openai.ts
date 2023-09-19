@@ -57,15 +57,15 @@ export async function generateCommitMessages(diff: string): Promise<[string[], O
  * @param usage
  * @returns
  */
-export function calculateUsageCost(usage: OpenAI.Completions.CompletionUsage | undefined): { tokens: number; cost: number } {
+export function calculateUsageCost(usage: OpenAI.Completions.CompletionUsage | undefined): number {
     if (usage == null) {
-        return { tokens: 0, cost: 0 }
+        return 0
     }
 
     const promptCost = (usage.prompt_tokens / 1000) * PROMPT_TOKEN_COST
     const completionCost = (usage.completion_tokens / 1000) * COMPLETION_TOKEN_COST
 
-    return { tokens: usage.total_tokens, cost: promptCost + completionCost }
+    return promptCost + completionCost
 }
 
 export default openai
