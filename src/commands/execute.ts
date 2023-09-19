@@ -57,7 +57,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         console.log('\nSuccess! Your changes have been comitted.')
     } else {
-        console.log('Your changes have not been committed.')
+        console.log('\nYour changes have not been committed.')
         process.exit(1)
     }
 }
