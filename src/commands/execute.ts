@@ -54,6 +54,8 @@ export async function execute(options: Partial<ExecutionOptions>) {
         await commitChanges(messages)
 
         commitSpinner.stop()
+
+        console.log('\nYour changes have been comitted.')
     } else {
         console.log('Your changes have not been committed.')
         process.exit(1)
