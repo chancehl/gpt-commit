@@ -10,9 +10,12 @@ jobs:
             - run: bun install
             - run: bun run package
 
-            - uses: Shopify/upload-to-release@v1.0.1
+            - uses: dev-build-deploy/release-me@v0
               with:
-                  name: gpt-commit
-                  path: gpt-commit
-                  repo-token: ${{ secrets.GITHUB_TOKEN }}
-                  content-type: text/plain # Optional
+                  token: ${{ github.token }}
+                  prefix: v # OPTIONAL; prefixes the version with v (e.g. v1.0.0)
+                  versioning: semver # OPTIONAL; either `semver` or `calver`
+                  files: | # OPTIONAL; multiline list of local files names to upload as GitHub Release assets
+                      gpt-commit
+                  artifacts: | # OPTIONAL; multiline list of build artifacts to upload as GitHub Release assets
+                      gpt-commit
