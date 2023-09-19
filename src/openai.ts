@@ -4,6 +4,20 @@ export const OPENAI_PROMPT = `Pretend you are an API endpoint whose purpose is w
 
 export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
+/**
+ * Generates the prompt to send to ChatGPT
+ *
+ * @param diff
+ * @param options
+ * @returns
+ */
+function generatePrompt(diff: string, options?: any): string {
+    return OPENAI_PROMPT.replace('{DIFF}', diff)
+}
+
+/**
+ * Parses the commit messages from an OpenAI completion object
+ */
 function parseCommitMessages(message: OpenAI.Chat.Completions.ChatCompletionMessage): string[] {
     if (message.content) {
         const lines = message.content.split('\n')
@@ -14,9 +28,15 @@ function parseCommitMessages(message: OpenAI.Chat.Completions.ChatCompletionMess
     return []
 }
 
+/**
+ * Invokes the ChatGPT completions API and returns the commit message(s) as an array of strings
+ *
+ * @param diff
+ * @returns
+ */
 export async function generateCommitMessages(diff: string): Promise<string[]> {
     const completion = await openai.chat.completions.create({
-        messages: [{ role: 'assistant', content: OPENAI_PROMPT.replace('{DIFF}', diff) }],
+        messages: [{ role: 'assistant', content: generatePrompt(diff) }],
         model: 'gpt-3.5-turbo',
     })
 
