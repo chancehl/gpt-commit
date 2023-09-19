@@ -37,11 +37,14 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     console.log(`ChatGPT generated the following commit message(s):\n`)
 
-    for (const message of messages) {
-        console.log(`${message}`)
+    for (let i = 0; i < messages.length; i++) {
+        console.log(`${colors.green(`${i + 1}`)}. ${messages[i]}`)
     }
 
-    const reply = prompt('\nWould you like to run `git commit -a` with this commit message?')
+    const loggedCommand = options.push ? 'git commit -a && git push' : 'git commit -a'
+    const promptMessage = `\nWould you like to run \`${loggedCommand}\` with this commit message?`
+
+    const reply = prompt(promptMessage)
 
     if (reply && reply.length && reply.toLowerCase() === 'y') {
         const commitSpinner = ora('Committing your changes')
