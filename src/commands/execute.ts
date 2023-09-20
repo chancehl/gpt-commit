@@ -3,7 +3,7 @@ import colors from 'colors'
 
 import { calculateUsageCost, generateCommitMessages } from '../openai'
 import { isGitRepository } from '../utils/is-repo'
-import { getDiff, commitChanges } from './subcommands/git'
+import { getDiff, commitChanges } from './processes/git'
 
 type ExecutionOptions = {
     push?: boolean
