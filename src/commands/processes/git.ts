@@ -1,5 +1,3 @@
-import { Errorlike, Subprocess } from 'bun'
-
 type GetDiffOptions = {
     stageFiles?: boolean
 }
