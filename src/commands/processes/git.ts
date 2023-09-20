@@ -51,6 +51,9 @@ export async function commitChanges(messages: string[], options?: CommitChangesO
     }
 }
 
+/**
+ * Stages all files for the user
+ */
 export async function stageAllFiles(): Promise<void> {
     Bun.spawnSync(['git', 'add', '.'])
 }
