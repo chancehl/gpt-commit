@@ -1,7 +1,6 @@
 import { Command } from 'commander'
 
 import { init } from './commands/init'
-import { GLOBAL_CONFIG_PATH } from './constants/config'
 import { execute } from './commands/execute'
 
 const program = new Command()
@@ -20,8 +19,8 @@ program
 // prettier-ignore
 program
     .command('init')
-    .description(`Creates the ${GLOBAL_CONFIG_PATH} file`)
-    .option('-f, --force', 'This option overwrites the existing file')
+    .description(`Creates the global config file`)
+    .option('-k, --key <key>', 'The user OpenAI API key')
     .action(init)
 
 // parse command line args

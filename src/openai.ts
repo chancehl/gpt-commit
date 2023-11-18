@@ -1,8 +1,10 @@
 import OpenAI from 'openai'
 
+import { getConfigPath } from './constants/config'
+
 export const OPENAI_PROMPT = `Please write one or more commit messages to describe the changes in this diff using the conventional commits git spec. Be specific, but each commit message must be less than 120 characters in length. Please return the response in JSON format with the commit messages contained in a top-level property "messages". The output of the "git diff" command is: {DIFF}`
 
-export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+export const openai = new OpenAI({ apiKey: await readKey() })
 
 export const PROMPT_TOKEN_COST = 0.0015
 
@@ -10,6 +12,21 @@ export const COMPLETION_TOKEN_COST = 0.002
 
 export type CommitMessage = {
     message: string
+}
+
+async function readKey(): Promise<string> {
+    const configPath = getConfigPath()
+    const configFile = Bun.file(configPath)
+
+    if (process.env.OPENAI_API_KEY) {
+        return process.env.OPENAI_API_KEY
+    }
+
+    if (await configFile.exists()) {
+        return await configFile.json()
+    }
+
+    throw Error('Missing OpenAI API key')
 }
 
 /**
