@@ -1,10 +1,6 @@
-type GetDiffOptions = {
-    stageFiles?: boolean
-}
+type GetDiffOptions = { stageFiles?: boolean }
 
-type CommitChangesOptions = {
-    push?: boolean
-}
+type CommitChangesOptions = { push?: boolean }
 
 /**
  * Gets the `git diff` and returns it as a string
