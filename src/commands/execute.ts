@@ -28,7 +28,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     gptSpinner.start()
 
-    const [messages, usage] = await generateCommitMessages(diff)
+    const [commits, usage] = await generateCommitMessages(diff)
 
     const cost = calculateUsageCost(usage)
 
@@ -36,8 +36,8 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
     console.log(`ChatGPT generated the following commit message(s):\n`)
 
-    for (let i = 0; i < messages.length; i++) {
-        console.log(`${messages[i]}`)
+    for (let i = 0; i < commits.length; i++) {
+        console.log(`${i + 1}. ${commits[i]}`)
     }
 
     console.log(colors.dim(`\nUsage: $${cost}`))
@@ -52,7 +52,7 @@ export async function execute(options: Partial<ExecutionOptions>) {
 
         commitSpinner.start()
 
-        await commitChanges(messages, { push: options.push })
+        await commitChanges(commits, { push: options.push })
 
         commitSpinner.stop()
 
